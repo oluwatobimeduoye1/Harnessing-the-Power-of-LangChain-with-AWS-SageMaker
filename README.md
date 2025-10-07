@@ -68,6 +68,17 @@ SageMaker JumpStart, are used to deploy models on SageMaker endpoints, ensuring 
 
 <img width="2650" height="1621" alt="image" src="https://github.com/user-attachments/assets/7cd0bd2b-077f-48b9-942a-f713d47b2690" />
 
+## Outcome
+
+This project demonstrates a production-ready AI workflow, connecting cloud infrastructure with generative AI models.
+It provides a blueprint for:
+
+- Building RAG-based applications with enterprise-level scalability.
+
+- Deploying serverless AI APIs with global reach.
+
+- Accelerating AI-powered software delivery pipelines in the cloud.
+
 # Concept
 In this project, we will:
 -   Use Amazon SageMaker JumpStart to deploy a foundation model as a hosted inference.
@@ -82,3 +93,58 @@ In this project, we will:
 3. Set up LangChain and connect to endpoint
 4. Build and test Q&A, RAG, and chatbot apps
 5. Integrate with Lambda, API Gateway, CloudFront
+
+
+# STEP 1
+1. Create an S3 bucket 
+2. S3 bucket will contain the project codes required for the project. 
+
+# STEP 2
+3. Navigate to Amazon sage maker and then open studio. 
+4. Go to Sagemaker Jumpstart
+
+Amazon SageMaker JumpStart is an ML hub that can help you accelerate your ML journey. With SageMaker JumpStart, you can evaluate, compare, and select foundation models (FMs) quickly based on pre-defined quality and responsibility metrics to perform tasks such as article summarization and image generation.
+
+5. Providers search box, type:   bge small, Under Models, choose the BGE Small En V1.5 model.
+6. For Instance type, review the default value, mLg5.2xlarge.
+7. Click Deploy. - Review and confirm the endpoint status is creating.
+8. Scroll to the top of the left navigation pane.
+9.    In the Applications pane, click JupyterLab.
+10.    On the JupyterLab page, under Status, review to confirm that the status is Stopped.
+11.    Under Action click Run. Once running open jupyterlab application 
+
+A JupyterLab space is a private or shared space within SageMaker Studio that manages the storage and compute resources needed to run the JupyterLab application.
+
+
+Amazon SageMaker Studio Lab provides pre-installed environments for your Studio Lab notebook instances. Using
+environments, you can start up a Studio Lab notebook instance with the packages you want to use. This is done by installing packages in the environment and then selecting the environment as a Kernel.
+
+Text generation foundation models can be used for a variety of downstream tasks, including text summarization, text classification, question answering, long-form content gen fation, short-form copywriting, information extraction, and more.
+
+### Deploy LLM using SageMaker JumpStart
+
+Step 1. Deploy text generation model.¶
+In this step, we will use the SageMaker Python SDK to deploy the Falcon model for text generation. This permissively licensed (Apache-2.0) open source model is trained on the RefinedWeb dataset.
+NOTE: The model might take 10 - 15 minutes to deploy.
+
+<img width="2104" height="784" alt="image" src="https://github.com/user-attachments/assets/f1719593-5a85-4ef1-a3df-0e21b2c0be31" />
+
+Step 2. Install LangChain and other required Python modules. : This code installs Python libraries (such as langchain, langchain_community, faiss-cpu, and ipywidgets).
+"
+!pip install --upgrade pip --root-user-action=ignore
+!pip install langchain < 0.4 --quiet --root-user-action=ignore
+!pip install --upgrade langchain_community < 0.4 --quiet --root-user-action=ignore
+!pip install --upgrade langchain-aws <0.3 --quiet --root-user-action=ignore
+!pip install faiss-cpu --quiet --root-user-action=ignore
+"
+
+
+
+
+
+
+
+
+
+
+
