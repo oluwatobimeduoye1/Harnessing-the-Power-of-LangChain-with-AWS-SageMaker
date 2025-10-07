@@ -130,19 +130,129 @@ NOTE: The model might take 10 - 15 minutes to deploy.
 <img width="2104" height="784" alt="image" src="https://github.com/user-attachments/assets/f1719593-5a85-4ef1-a3df-0e21b2c0be31" />
 
 Step 2. Install LangChain and other required Python modules. : This code installs Python libraries (such as langchain, langchain_community, faiss-cpu, and ipywidgets).
-"
-!pip install --upgrade pip --root-user-action=ignore
-!pip install langchain < 0.4 --quiet --root-user-action=ignore
-!pip install --upgrade langchain_community < 0.4 --quiet --root-user-action=ignore
-!pip install --upgrade langchain-aws <0.3 --quiet --root-user-action=ignore
-!pip install faiss-cpu --quiet --root-user-action=ignore
-"
 
+'''!pip install --upgrade pip --root-user-action=ignore
+   !pip install langchain < 0.4 --quiet --root-user-action=ignore
+   !pip install --upgrade langchain_community < 0.4 --quiet --root-user-action=ignore
+   !pip install --upgrade langchain-aws <0.3 --quiet --root-user-action=ignore
+   !pip install faiss-cpu --quiet --root-user-action=ignore '''
 
+Step 3: Import the required Python modules and set up the Amazon SageMaker runtime client.
+This code imports Python libraries and initializes the SageMaker session.
 
+''' import boto3, json
+from typing import List
 
+session = boto3.Session()
+sagemaker_runtime_client = session.client("sagemaker-runtime") 
+'''
 
+## Set up LangChain and connect to endpoint
 
+Step 4: Use LangChain with an LLM hosted on a SageMaker endpoint to test a basic Q&A app. 
+This code imports LangChain modules required to create a basic Q&A application by using SageMaker endpoints. The code also loads the sample strings by using inbuilt tools : 
+'' from typing import Dict
+from langchain_core.prompts import PromptTemplate 
+from langchain_aws import SagemakerEndpoint
+from langchain_aws.llms.sagemaker_endpoint import LLMContentHandler
+from langchain.docstore.document import Document 
+''
+
+## Return to the JupyterLab browser tab.
+In the Step 5 code cell, to update the embedding and instruct endpoint names, paste the two names that you just copied.
+Make sure to update the jumpstart-embedding-endpoint and falcon-instruct-endpoint with the actual names of your deployed SageMaker endpoints.
+
+Step 5: Test the Q&A chain with a sample question.¶
+This code block initializes the question and answering chain with the SageMaker endpoint and prompt template. 
+
+Step 6: Use Retrieval Augmented Generation (RAG), with LangChain and SageMaker endpoints, to build a basic Q&A app.¶
+
+## Build and test Q&A, RAG, and chatbot apps
+Step 8: Apply additional use cases.¶
+Using LangChain and an LLM helps you create straightforward custom tools, such as code generators and chatbots.
+Step 8.1 : Create a code generator with LangChain and an LLM.¶
+The following code snippet outlines the setup for automated code generation using LangChain and an LLM.
+* The code imports the necessary components from LangChain and initializes the LLM.
+* A prompt template is defined to guide the LLM in writing Python functions based on task descriptions.
+* A PromptTemplate instance is created, configuring how the task description is processed.
+* An LLMChain instance is then established, combining the prompt and the LLM, ready to generate code.
+	•	The system generates code by running the LLMChain with a given task description, demonstrating a streamlined method for converting task descriptions into functional Python code.   Step 8.2: Create a chatbot with LangChain and an LLM.¶
+This code snippet demonstrates the process of establishing a conversation chain equipped with memory functionality, using LangChain and an LLM.
+* The code imports ConversationBufferMemory and ConversationChain from LangChain. The code then initializes the LLM by using a specific model.
+* The code creates a memory buffer designed to store and manage the context of a conversation, making sure past interactions can be recalled and used to inform an ongoing dialogue.
+* The final step involves constructing the ConversationChain, which seamlessly integrates both the LLM and the newly created memory buffer.
+Through this structured approach, the code facilitates the development of conversational AI interactions capable of retaining and using past dialogue. This capability significantly improves the interactions, making them more coherent and context-sensitive, thus mimicking a more natural and engaging conversational experience.
+
+from langchain.memory import ConversationBufferMemory
+from langchain import ConversationChain
+from langchain.schema import SystemMessage
+
+parameters = { 
+    "max_length": 200, 
+    "num_return_sequences": 1, 
+    "top_k": 10, 
+    "top_p": 0.01, 
+    "do_sample": False, 
+    "temperature": 0, }
+
+sm_llm = SagemakerEndpoint(
+    endpoint_name=instruct_endpoint_name,
+    region_name='us-east-1',
+    model_kwargs=parameters,
+    content_handler=content_handler,
+)
+
+# Initialize the LLM (in this case, OpenAI's GPT-3)
+llm = sm_llm
+
+# # Initialize the memory
+memory = ConversationBufferMemory(memory_key="history", return_messages=False)
+
+# # Add system message
+memory.chat_memory.add_message(SystemMessage(content="You are a helpful professional assistant. Respond to the question only."))
+
+# Create the conversation chain with memory
+conversation = ConversationChain(
+    llm=llm,
+    memory=memory,
+    verbose=False
+)   Below the final code cell, review the output to see the "Human" text box 
+“
+def chat_with_ai():
+    print("Hi! I'm an AI assistant. How can I help you today?")
+    try:
+        while True:
+            human_input = input("Human: ").strip()
+            if human_input.lower() == 'exit':
+                print("Assistant: Goodbye!")
+                break  # Exit the loop if the user types 'exit'
+            # Process the input through the conversation chain using the run method.
+            response = conversation.run(input=human_input)
+            # Print the AI's response.
+            print(f"Assistant: {response}")
+    except KeyboardInterrupt:
+        print("\nAssistant: Goodbye!")
+“  
+
+## Integrate with Lambda, API Gateway, CloudFront
+
+Navigate to the AWS Lambda console.
+1. In the left navigation pane, click Functions.
+2. In the Functions section, click application_function.   AWS Lambda is a compute service that helps you run code without provisioning or managing servers.
+
+You can create a web API with an HTTP endpoint for your Lambda function by using Amazon API Gateway. API Gateway provides tools for creating and documenting web APIs that route HTTP requests to Lambda functions.
+You can secure access to your API with authentication and authorization controls. Your ve traffic over the internet or can be accessible only within your VPC.   1. Review the Function overview section.
+- Amazon API Gateway uses the payload to invoke the Lambda function.
+-
+- Navigate to the Amazon CloudFront console.
+1. In the left navigation pane, click Distributions.
+2. In the Distributions section, click the available distribution ID.
+
+## TEST THE APPLICATION 
+
+Return to the web application browser tab.
+2. For API Gateway URL, paste the URL that you just copied.
+3. For Prompt, type any content that you want to summarize. 
 
 
 
